@@ -154,7 +154,20 @@ export class AppComponent implements OnInit, OnDestroy {
       // y usamos directamente autenticación anónima.
       await signInAnonymously(auth);
     } catch (error) {
+      // Friendly handling when anonymous sign-in is disallowed by the
+      // Firebase project (common in locked production projects).
       console.error("Auth error:", error);
+      try {
+        const errAny = error as any;
+        const code = errAny?.code || errAny?.message || '';
+        if (String(code).includes('admin-restricted-operation') || String(code).includes('ADMIN_RESTRICTED_OPERATION')) {
+          console.warn('Anonymous authentication appears to be disabled for this Firebase project.\n' +
+            'Enable Anonymous sign-in in Firebase Console -> Authentication -> Sign-in method,\n' +
+            'or provide a valid auth method for this environment.');
+        }
+      } catch (e) {
+        // ignore
+      }
     }
 
     this.unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
