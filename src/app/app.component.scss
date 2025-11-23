@@ -369,7 +369,10 @@ $black: #000000;
   border-radius: 1rem;
   box-shadow: 0 25px 50px -12px rgba($black, 0.25);
   border: 1px solid #334155; // slate-700
-  height: 80vh;
+  /* allow the panel to fit inside the viewport and scroll if needed */
+  height: auto;
+  max-height: calc(100vh - 4rem);
+  overflow: auto;
   display: flex;
   flex-direction: column;
 
@@ -405,19 +408,23 @@ $black: #000000;
   }
 
   .panel-body {
-    flex: 1;
-    overflow: hidden;
+    flex: 1 1 auto;
+    /* allow the whole body to scroll when content is taller than available space */
+    overflow: auto;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 
     @media (min-width: 1024px) {
       flex-direction: row;
+      align-items: flex-start;
     }
   }
 
   .leads-list {
-    flex: 1;
+    flex: 1 1 auto;
+    /* ensure the list can grow and scroll inside the admin panel */
+    min-height: 220px;
     overflow-y: auto;
     background-color: rgba(#1e293b, 0.5); // slate-800/50
     border-radius: 0.75rem;
@@ -473,6 +480,8 @@ $black: #000000;
   }
   
   .admin-actions {
+    /* keep a fixed action column size and ensure it doesn't stretch vertically */
+    flex: 0 0 18rem;
     min-width: 18rem;
     background-color: rgba(#1e293b, 0.5); // slate-800/50
     border-radius: 0.75rem;
@@ -482,6 +491,7 @@ $black: #000000;
     align-items: center;
     justify-content: center;
     text-align: center;
+    align-self: flex-start;
     
     .crown-icon {
       color: #f59e0b; // yellow-500
@@ -506,6 +516,7 @@ $black: #000000;
       width: 100%;
       padding: 0.75rem 0;
       margin-bottom: 1.5rem;
+      margin-top: 0.25rem;
     }
 
     .winner-box {
@@ -514,6 +525,8 @@ $black: #000000;
       padding: 1rem;
       border-radius: 0.75rem;
       width: 100%;
+      min-height: 72px;
+      z-index: 30; /* bring winner box above potential overlays */
       animation: fadeIn 0.5s ease-out;
 
       .winner-label {
