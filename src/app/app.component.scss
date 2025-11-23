@@ -1,0 +1,546 @@
+// Variables para colores y tamaños
+$primary-color: #f8c300;
+$indigo-900: #372e5a;
+$purple-900: #553b7c;
+$pink-900: #8c266a;
+$white: #ffffff;
+$black: #000000;
+
+// Mixin para estilos de botones (efectos visuales)
+@mixin button-styles($bg-start, $bg-end) {
+  background: linear-gradient(to right, $bg-start, $bg-end);
+  color: $white;
+  font-weight: bold;
+  padding: 0.75rem 3rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s;
+  cursor: pointer;
+  
+  &:hover:not(:disabled) {
+    transform: scale(1.02);
+    box-shadow: 0 20px 25px -5px rgba($bg-start, 0.5), 0 8px 10px -6px rgba($bg-end, 0.5);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// --- Animaciones ---
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(-5%); animation-timing-function: cubic-bezier(0.8, 0, 1, 1); }
+  50% { transform: translateY(0); animation-timing-function: cubic-bezier(0, 0, 0.2, 1); }
+}
+
+
+.app-container {
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, $indigo-900, $purple-900, $pink-900);
+  color: $white;
+  font-family: sans-serif;
+  overflow: hidden;
+  position: relative;
+}
+
+.app-header {
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba($black, 0.2);
+  backdrop-filter: blur(4px);
+  border-bottom: 1px solid rgba($white, 0.1);
+
+  .header-icon {
+    color: $primary-color;
+  }
+
+  .header-title {
+    font-weight: bold;
+    font-size: 1.25rem;
+    letter-spacing: -0.025em;
+  }
+
+  .admin-button {
+    font-size: 0.75rem;
+    background-color: rgba($white, 0.1);
+    border: none;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    transition: background-color 0.2s;
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgba($white, 0.2);
+    }
+  }
+}
+
+.main-content {
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.animate-bounce {
+  animation: bounce 1s infinite;
+}
+
+// --- Loading State ---
+.loading-spinner {
+  animation: spin 1s linear infinite;
+  height: 2.5rem;
+  width: 2.5rem;
+  color: $white;
+}
+
+// --- Register View (Card) ---
+.register-card {
+  width: 100%;
+  max-width: 28rem;
+  background-color: rgba($white, 0.1);
+  backdrop-filter: blur(8px);
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 25px 50px -12px rgba($black, 0.25);
+  border: 1px solid rgba($white, 0.2);
+  text-align: center;
+
+  .card-icon {
+    color: $primary-color;
+    margin: 0 auto 1rem;
+    animation: bounce 1s infinite;
+  }
+  
+  .card-title {
+    font-size: 1.875rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #93c5fd; // indigo-200
+    margin-bottom: 0.25rem;
+  }
+
+  .form-input-wrapper {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .form-input-prefix {
+    position: absolute;
+    left: 0.75rem;
+    top: 0.75rem;
+    color: #9da6be; // indigo-400
+  }
+
+  .form-input {
+    width: 100%;
+    background-color: rgba($black, 0.3);
+    border: 1px solid rgba(#6366f1, 0.3); // indigo-500/30
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    box-sizing: border-box;
+    min-width: 0;
+    color: $white;
+    &::placeholder {
+      color: #9da6be; // indigo-400
+    }
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px #ec4899; // pink-500
+    }
+  }
+
+  .handle-input {
+    padding-left: 2.5rem;
+  }
+
+  .submit-button {
+    @include button-styles(#ec4899, #9333ea); // pink-500, purple-600
+    width: 100%;
+    margin-top: 1.5rem;
+    padding: 0.75rem 0;
+  }
+}
+
+// --- Game View (Wheel) ---
+.game-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 28rem;
+}
+
+.wheel-wrapper {
+  position: relative;
+  width: 18rem;
+  height: 18rem;
+  margin-bottom: 2rem;
+  z-index: 0;
+}
+
+.wheel-pointer {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: -1rem;
+  z-index: 20;
+  color: $primary-color;
+  filter: drop-shadow(0 4px 3px rgba(0, 0, 0, 0.07));
+
+  &::before {
+    content: '';
+    display: block;
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 30px solid $primary-color;
+  }
+}
+
+.wheel {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 4px solid rgba($white, 0.2);
+  box-shadow: 0 25px 50px -12px rgba($black, 0.25);
+  overflow: hidden;
+  position: relative;
+  transition: transform 3000ms cubic-bezier(0.3, 0.7, 0.4, 1); // custom ease-out
+  /* variables to tune label position */
+  --label-translate: -8%;
+  --label-width: 45%;
+
+  .prize-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: var(--label-width);
+    height: 1.1rem;
+    transform-origin: left center;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 0;
+    font-size: 0.75rem;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: $white;
+    text-shadow: 0 1px 2px rgba($black, 0.5);
+
+    span {
+      display: inline-block;
+    }
+
+    }
+
+  }
+
+
+
+.wheel-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2rem;
+  height: 2rem;
+  background-color: $white;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 10px 15px -3px rgba($black, 0.1);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4338ca; // indigo-900
+  font-weight: bold;
+  border: 2px solid #e0e7ff; // indigo-100
+  font-size: 10px;
+}
+
+.spin-button {
+  background-color: $primary-color;
+  color: #78350f; // yellow-900
+  font-size: 1.25rem;
+  @include button-styles($primary-color, darken($primary-color, 10%));
+  padding: 1rem 3rem;
+  
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+
+// --- Result View ---
+.result-card {
+  text-align: center;
+  background-color: rgba($white, 0.1);
+  backdrop-filter: blur(12px);
+  padding: 2.5rem;
+  border-radius: 1.5rem;
+  border: 1px solid rgba($white, 0.3);
+  max-width: 28rem;
+  width: 100%;
+  animation: fadeIn 0.8s ease-out;
+
+  .icon-party {
+    color: $primary-color;
+    margin: 0 auto 1.5rem;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .result-title {
+    font-size: 2.25rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: $white;
+  }
+
+  .prize-box {
+    background-color: $white;
+    color: #553c9a; // purple-900
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding: 1rem 2rem;
+    border-radius: 0.75rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 10px 15px -3px rgba($black, 0.1);
+    transform: rotate(2deg);
+  }
+
+  .reset-link {
+    color: $black;
+    text-decoration: underline;
+    transition: color 0.2s;
+    cursor: pointer;
+    &:hover {
+      color: #022913; // yellow-300
+    }
+  }
+}
+
+// --- Admin View ---
+.admin-panel {
+  width: 100%;
+  max-width: 64rem;
+  background-color: rgba(#0f172a, 0.9); // slate-900/90
+  backdrop-filter: blur(12px);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 25px 50px -12px rgba($black, 0.25);
+  border: 1px solid #334155; // slate-700
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #334155; // slate-700
+  }
+  
+  .panel-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: $white;
+    
+    .lock-icon {
+      color: #f87171; // red-400
+    }
+  }
+  
+  .close-button {
+    color: #94a3b8; // slate-400
+    cursor: pointer;
+    transition: color 0.2s;
+    &:hover {
+      color: $white;
+    }
+  }
+
+  .panel-body {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    @media (min-width: 1024px) {
+      flex-direction: row;
+    }
+  }
+
+  .leads-list {
+    flex: 1;
+    overflow-y: auto;
+    background-color: rgba(#1e293b, 0.5); // slate-800/50
+    border-radius: 0.75rem;
+    padding: 1rem;
+    
+    .list-header {
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #9da6be; // indigo-300
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .lead-item {
+      background-color: rgba(#334155, 0.5); // slate-700/50
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background-color 0.2s;
+      
+      &:hover {
+        background-color: rgba(#334155, 0.7);
+      }
+
+      .lead-name {
+        font-weight: 500;
+        color: $white;
+      }
+      
+      .lead-handle {
+        font-size: 0.875rem;
+        color: #a5b4fc; // indigo-400
+      }
+      
+      .lead-prize {
+        font-size: 0.75rem;
+        background-color: rgba(#6366f1, 0.2); // indigo-500/20
+        color: #9da6be; // indigo-300
+        padding: 0.25rem 0.5rem;
+        border-radius: 9999px;
+        border: 1px solid rgba(#6366f1, 0.3);
+      }
+    }
+
+    .no-leads {
+      color: #64748b; // slate-500
+      text-align: center;
+      padding: 2.5rem 0;
+    }
+  }
+  
+  .admin-actions {
+    min-width: 18rem;
+    background-color: rgba(#1e293b, 0.5); // slate-800/50
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    
+    .crown-icon {
+      color: #f59e0b; // yellow-500
+      margin-bottom: 1rem;
+    }
+
+    .action-title {
+      font-size: 1.25rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .action-description {
+      color: #94a3b8; // slate-400
+      font-size: 0.875rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .winner-button {
+      @include button-styles(#f59e0b, #eab308); // yellow-500, yellow-400
+      color: $black;
+      width: 100%;
+      padding: 0.75rem 0;
+      margin-bottom: 1.5rem;
+    }
+
+    .winner-box {
+      background: linear-gradient(to bottom right, rgba(#f59e0b, 0.2), rgba(#9333ea, 0.2));
+      border: 1px solid rgba(#f59e0b, 0.5);
+      padding: 1rem;
+      border-radius: 0.75rem;
+      width: 100%;
+      animation: fadeIn 0.5s ease-out;
+
+      .winner-label {
+        font-size: 0.75rem;
+        color: #fde68a; // yellow-200
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: bold;
+        margin-bottom: 0.25rem;
+      }
+      
+      .winner-name {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: $white;
+        margin-bottom: 0.25rem;
+      }
+      
+      .winner-handle {
+        color: #a5b4fc; // indigo-300
+      }
+
+      .winner-prize {
+        margin-top: 0.5rem;
+        font-size: 0.75rem;
+        color: #94a3b8; // slate-400
+      }
+    }
+  }
+}
